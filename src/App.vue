@@ -1,28 +1,52 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Header />
+    <GameField :size="size" />
+    <Footer />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+import Header from './components/Header.vue';
+import Footer from './components/Footer.vue';
+import GameField from './components/GameField.vue';
 
 export default {
   name: 'App',
+
   components: {
-    HelloWorld,
+    Header,
+    Footer,
+    GameField,
+  },
+
+  data() {
+    return {
+      size: 2,
+    };
   },
 };
 </script>
 
 <style lang="scss">
+/*
+* STYLE RESET
+*/
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+ul {
+  list-style-type: none;
+}
+/* END STYLE RESET */
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  width: 640px;
+  height: auto;
+  margin: 0 auto;
+  font-family: 'Courier New', Courier, monospace;
 }
 </style>
