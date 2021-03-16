@@ -16,6 +16,7 @@ export const ACTION_INIT_GAME = 'actionInitGame';
 export const ACTION_FETCH_NEW_CELLS = 'actionFetchNewCells';
 export const ACTION_SET_CELL_SIZE = 'actionSetCellSize';
 export const ACTION_SET_FIELD_SIZE = 'actionSetFieldSize';
+export const ACTION_UPDATE_CELLS = 'actionUpdateCells';
 
 const MUTATION_SET_CELLS = 'mutationSetCells';
 const MUTATION_SET_CELL_SIZE = 'mutationSetCellSize';
@@ -53,22 +54,23 @@ export default new Vuex.Store({
   },
   actions: {
     async [ACTION_FETCH_NEW_CELLS]({ commit, dispatch, state }) {
-      const url = `${SERVER_URL}/${state.gameLevel}`;
-
       commit(MUTATION_SET_PROCESSING, true);
       commit(MUTATION_SET_REQUESTS_COUNTER, state.requestsCounter + 1);
+
+      const url = `${SERVER_URL}/${state.gameLevel}`;
+      const cellsWithoutValue = state.cells.filter((cell) => cell.value > 0);
 
       try {
         const { data } = await axios({
           method: 'post',
           url,
-          data: [],
+          data: cellsWithoutValue,
         });
 
-        console.log(data);
         commit(MUTATION_SET_ERROR, false);
         commit(MUTATION_SET_PROCESSING, false);
         commit(MUTATION_SET_REQUESTS_COUNTER, 0);
+        dispatch(ACTION_UPDATE_CELLS, data);
       } catch (error) {
         commit(MUTATION_SET_ERROR, true);
 
@@ -82,17 +84,17 @@ export default new Vuex.Store({
         }
       }
     },
-    [ACTION_INIT_GAME]({ commit, dispatch }, { gameLevel = 2 } = {}) {
+    async [ACTION_INIT_GAME]({ commit, dispatch }, { gameLevel = 2 } = {}) {
       const cellsQuantity = getCellsQuantity(gameLevel);
       const cells = generateCells(gameLevel);
 
       commit(MUTATION_SET_CELLS_QUANTITY, cellsQuantity);
       commit(MUTATION_SET_CELLS, cells);
       commit(MUTATION_SET_GAME_LEVEL, gameLevel);
-      commit(MUTATION_SET_GAME_STATUS, GAME_STATUSES.PLAYING);
       dispatch(ACTION_SET_CELL_SIZE);
       dispatch(ACTION_SET_FIELD_SIZE);
-      dispatch(ACTION_FETCH_NEW_CELLS);
+      await dispatch(ACTION_FETCH_NEW_CELLS);
+      commit(MUTATION_SET_GAME_STATUS, GAME_STATUSES.PLAYING);
     },
     [ACTION_SET_CELL_SIZE]({ commit, state }) {
       const size = getCellSize(state.gameLevel);
@@ -111,6 +113,18 @@ export default new Vuex.Store({
         width: fieldWidth,
         height: fieldHeight,
       });
+    },
+    [ACTION_UPDATE_CELLS]({ commit, state }, newCells) {
+      const updatedCells = Array.from(state.cells);
+
+      newCells.forEach((cell) => {
+        const updatedCell = updatedCells.find(
+          (c) => c.x === cell.x && c.y === cell.y && c.z === cell.z,
+        );
+        updatedCell.value = cell.value;
+      });
+
+      commit(MUTATION_SET_CELLS, updatedCells);
     },
   },
   mutations: {

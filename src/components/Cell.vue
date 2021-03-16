@@ -8,7 +8,7 @@
     :style="style"
   >
     <Hexagon :background-color="backgroundColor" />
-    <span class="cell__value">{{ cell.value }}</span>
+    <span v-if="cell.value > 0" class="cell__value">{{ cell.value }}</span>
   </div>
 </template>
 

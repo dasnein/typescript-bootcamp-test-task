@@ -60,6 +60,7 @@ export default {
 
 <style lang="scss">
 .icon__hexagon {
+  transition: all 0.4s linear;
 
   &__polygon {
     fill-opacity: 0.8;
