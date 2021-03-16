@@ -13,10 +13,10 @@ import getFieldHeight from '@/helpers/get_field_height';
 Vue.use(Vuex);
 
 export const ACTION_INIT_GAME = 'actionInitGame';
-export const ACTION_FETCH_NEW_CELLS = 'actionFetchNewCells';
-export const ACTION_SET_CELL_SIZE = 'actionSetCellSize';
-export const ACTION_SET_FIELD_SIZE = 'actionSetFieldSize';
-export const ACTION_UPDATE_CELLS = 'actionUpdateCells';
+const ACTION_FETCH_NEW_CELLS = 'actionFetchNewCells';
+const ACTION_SET_CELL_SIZE = 'actionSetCellSize';
+const ACTION_SET_FIELD_SIZE = 'actionSetFieldSize';
+const ACTION_UPDATE_CELLS = 'actionUpdateCells';
 
 const MUTATION_SET_CELLS = 'mutationSetCells';
 const MUTATION_SET_CELL_SIZE = 'mutationSetCellSize';

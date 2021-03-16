@@ -1,12 +1,17 @@
 <template>
   <div id="app">
     <Header />
-    <GameField />
+    <GameField v-if="showGameField" />
     <Footer />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
+import { ACTION_INIT_GAME, GAME_STATUSES } from '@/store/index';
+import { GAME_LEVELS } from '@/config';
+
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 import GameField from './components/GameField.vue';
@@ -18,6 +23,25 @@ export default {
     Header,
     Footer,
     GameField,
+  },
+
+  computed: {
+    ...mapState(['status']),
+    showGameField() {
+      return this.status !== GAME_STATUSES.ROUND_SELECT;
+    },
+  },
+
+  mounted() {
+    const { hash } = window.location;
+
+    if (hash) {
+      const gameLevel = hash.replace('#test', '');
+
+      if (gameLevel in GAME_LEVELS) {
+        this.$store.dispatch(ACTION_INIT_GAME, { gameLevel });
+      }
+    }
   },
 };
 </script>
