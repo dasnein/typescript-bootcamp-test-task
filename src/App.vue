@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header />
-    <GameField :size="size" />
+    <GameField />
     <Footer />
   </div>
 </template>
@@ -18,12 +18,6 @@ export default {
     Header,
     Footer,
     GameField,
-  },
-
-  data() {
-    return {
-      size: 2,
-    };
   },
 };
 </script>
