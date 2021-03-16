@@ -36,9 +36,14 @@ export default {
 .game-field {
   position: relative;
   width: 640px;
-  height: 500px;
+  height: auto;
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  padding: 10px 0;
+
+  .cells-container {
+    position: relative;
+  }
 }
 </style>
