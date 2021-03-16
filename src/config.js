@@ -22,6 +22,10 @@ export const BG_COLORS = {
   2048: '#edc22e',
 };
 
+export const SERVER_URL = '//68f02c80-3bed-4e10-a747-4ff774ae905a.pub.instances.scw.cloud';
+export const REQUESTS_LIMIT = 3;
+export const REQUESTS_TIMEOUT = 2 * 1000;
+
 export default {
   BG_COLORS,
   DEFAULT_CELL_BACKGROUND_COLOR,
@@ -30,4 +34,7 @@ export default {
   GAME_FIELD_WIDTH,
   GAME_LEVELS,
   MAX_CELL_SIZE,
+  REQUESTS_LIMIT,
+  REQUESTS_TIMEOUT,
+  SERVER_URL,
 };

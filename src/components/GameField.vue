@@ -1,5 +1,6 @@
 <template>
   <div class="game-field">
+    <ErrorOverlay v-if="error" />
     <div class="cells-container" :style="fieldStyle">
       <Cell v-for="cell in cells" :key="cell.index" :cell="cell" />
     </div>
@@ -10,16 +11,18 @@
 import { mapState } from 'vuex';
 
 import Cell from './Cell.vue';
+import ErrorOverlay from './ErrorOverlay.vue';
 
 export default {
   name: 'GameField',
 
   components: {
     Cell,
+    ErrorOverlay,
   },
 
   computed: {
-    ...mapState(['cells', 'cellSize', 'fieldSize', 'gameLevel']),
+    ...mapState(['error', 'cells', 'cellSize', 'fieldSize', 'gameLevel']),
     fieldStyle() {
       const { height, width } = this.fieldSize;
 
