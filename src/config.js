@@ -2,7 +2,7 @@ export const DEFAULT_STROKE_WIDTH = 4;
 export const DEFAULT_CELL_BACKGROUND_COLOR = '#fff';
 export const GAME_FIELD_MIN_HEIGHT = 500;
 export const GAME_FIELD_WIDTH = 500;
-export const GAME_LEVELS = [1, 2, 3, 4, 5];
+export const GAME_LEVELS = [2, 3, 4];
 export const MAX_CELL_SIZE = {
   width: 200,
   height: 174,
