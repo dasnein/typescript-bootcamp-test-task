@@ -6,8 +6,10 @@ import {
 import getCellSize from '@/helpers/get_cell_size';
 import generateCells from '@/helpers/generate_cells';
 import getFieldHeight from '@/helpers/get_field_height';
+import generateStacks from '@/helpers/generate_stacks';
 import prepareCellsForSending from '@/helpers/prepare_cells_for_sending';
-import { GAME_STATUSES } from './constants';
+import checkAvailableMoves from '@/helpers/check_available_moves';
+import { AXIS_SORT_DEPENDENCY, GAME_STATUSES } from './constants';
 import {
   MUTATION_SET_CELLS,
   MUTATION_SET_CELL_SIZE,
@@ -101,40 +103,13 @@ export default {
 
     commit(MUTATION_SET_CELLS, updatedCells);
   },
-  [ACTION_PLAYER_TURN]({ commit, dispatch, state }, { axis = 'x', direction = 'up' } = {}) {
-    const TURNS_LOGIC = {
-      x: 'y',
-      y: 'x',
-      z: 'x',
-    };
-
-    const sortAxis = TURNS_LOGIC[axis];
-
+  async [ACTION_PLAYER_TURN]({ commit, dispatch, state }, { axis, direction }) {
     let turnProcessed = false;
 
-    // create stacks by action axis
-    const stacks = state.cells.reduce((tempStacks, cell) => {
-      const updatedStacks = { ...tempStacks };
-      const stacksKey = cell[axis];
-
-      if (!updatedStacks[stacksKey]) {
-        updatedStacks[stacksKey] = [];
-      }
-
-      updatedStacks[stacksKey].push({ ...cell });
-
-      return updatedStacks;
-    }, {});
-
-    // sort stacks
-    Object.values(stacks).forEach((stack) => {
-      stack.sort((a, b) => {
-        if (direction === 'up') {
-          return b[sortAxis] - a[sortAxis];
-        }
-
-        return a[sortAxis] - b[sortAxis];
-      });
+    // create stacks by action axis and sort them
+    const sortAxis = AXIS_SORT_DEPENDENCY[axis];
+    const stacks = generateStacks({
+      cells: state.cells, axis, sortAxis, direction,
     });
 
     // turn logic
@@ -188,7 +163,13 @@ export default {
 
     if (turnProcessed) {
       commit(MUTATION_SET_CELLS, updatedCells);
-      dispatch(ACTION_FETCH_NEW_CELLS);
+      await dispatch(ACTION_FETCH_NEW_CELLS);
+    }
+
+    const isAvailableMoves = checkAvailableMoves(state.cells);
+
+    if (!isAvailableMoves) {
+      commit(MUTATION_SET_GAME_STATUS, GAME_STATUSES.GAME_OVER);
     }
   },
 };
