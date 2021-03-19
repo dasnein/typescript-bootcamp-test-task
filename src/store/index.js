@@ -13,6 +13,7 @@ export default new Vuex.Store({
     processing: false,
     error: false,
     requestsCounter: 0,
+    turnNumber: 0,
     gameLevel: 0,
     status: GAME_STATUSES.ROUND_SELECT,
     fieldSize: {
@@ -23,7 +24,6 @@ export default new Vuex.Store({
       width: 0,
       height: 0,
     },
-    cellsQuantity: 0,
     cells: [],
   },
   actions,
