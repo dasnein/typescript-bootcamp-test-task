@@ -4,20 +4,20 @@ import {
   GAME_FIELD_MIN_HEIGHT, GAME_FIELD_WIDTH, REQUESTS_LIMIT, REQUESTS_TIMEOUT, SERVER_URL,
 } from '@/config';
 import getCellSize from '@/helpers/get_cell_size';
-import getCellsQuantity from '@/helpers/get_cells_quantity';
 import generateCells from '@/helpers/generate_cells';
 import getFieldHeight from '@/helpers/get_field_height';
+import prepareCellsForSending from '@/helpers/prepare_cells_for_sending';
 import { GAME_STATUSES } from './constants';
 import {
   MUTATION_SET_CELLS,
   MUTATION_SET_CELL_SIZE,
-  MUTATION_SET_CELLS_QUANTITY,
   MUTATION_SET_ERROR,
   MUTATION_SET_FIELD_SIZE,
   MUTATION_SET_GAME_LEVEL,
   MUTATION_SET_GAME_STATUS,
   MUTATION_SET_PROCESSING,
   MUTATION_SET_REQUESTS_COUNTER,
+  MUTATION_SET_TURN_NUMBER,
 } from './mutations';
 
 export const ACTION_INIT_GAME = 'actionInitGame';
@@ -33,13 +33,13 @@ export default {
     commit(MUTATION_SET_REQUESTS_COUNTER, state.requestsCounter + 1);
 
     const url = `${SERVER_URL}/${state.gameLevel}`;
-    const cellsWithoutValue = state.cells.filter((cell) => cell.value > 0);
+    const filteredCells = prepareCellsForSending(state.cells);
 
     try {
       const { data } = await axios({
         method: 'post',
         url,
-        data: cellsWithoutValue,
+        data: filteredCells,
       });
 
       commit(MUTATION_SET_ERROR, false);
@@ -59,11 +59,10 @@ export default {
       }
     }
   },
-  async [ACTION_INIT_GAME]({ commit, dispatch }, { gameLevel = 2 } = {}) {
-    const cellsQuantity = getCellsQuantity(gameLevel);
-    const cells = generateCells(gameLevel);
+  async [ACTION_INIT_GAME]({ commit, dispatch, state }, { gameLevel = 2 } = {}) {
+    const cells = generateCells({ gameLevel, turnNumber: state.turnNumber });
 
-    commit(MUTATION_SET_CELLS_QUANTITY, cellsQuantity);
+    commit(MUTATION_SET_TURN_NUMBER, 0);
     commit(MUTATION_SET_CELLS, cells);
     commit(MUTATION_SET_GAME_LEVEL, gameLevel);
     dispatch(ACTION_SET_CELL_SIZE);
@@ -97,14 +96,99 @@ export default {
         (c) => c.x === cell.x && c.y === cell.y && c.z === cell.z,
       );
       updatedCell.value = cell.value;
+      updatedCell.attention = true;
     });
 
     commit(MUTATION_SET_CELLS, updatedCells);
   },
-  [ACTION_PLAYER_TURN]({ state }, { axis = 'x', direction = 'desc' } = {}) {
-    console.log('::: ACTION_TURN');
-    console.log(state.cells);
-    console.log('axis: ', axis);
-    console.log('direction: ', direction);
+  [ACTION_PLAYER_TURN]({ commit, dispatch, state }, { axis = 'x', direction = 'up' } = {}) {
+    const TURNS_LOGIC = {
+      x: 'y',
+      y: 'x',
+      z: 'x',
+    };
+
+    const sortAxis = TURNS_LOGIC[axis];
+
+    let turnProcessed = false;
+
+    // create stacks by action axis
+    const stacks = state.cells.reduce((tempStacks, cell) => {
+      const updatedStacks = { ...tempStacks };
+      const stacksKey = cell[axis];
+
+      if (!updatedStacks[stacksKey]) {
+        updatedStacks[stacksKey] = [];
+      }
+
+      updatedStacks[stacksKey].push({ ...cell });
+
+      return updatedStacks;
+    }, {});
+
+    // sort stacks
+    Object.values(stacks).forEach((stack) => {
+      stack.sort((a, b) => {
+        if (direction === 'up') {
+          return b[sortAxis] - a[sortAxis];
+        }
+
+        return a[sortAxis] - b[sortAxis];
+      });
+    });
+
+    // turn logic
+    Object.values(stacks).forEach((stack) => {
+      for (let currentCellIndex = 1; currentCellIndex < stack.length; currentCellIndex++) {
+        const currentCell = stack[currentCellIndex];
+
+        if (currentCell.value > 0) {
+          let prevCellIndex = currentCellIndex;
+
+          while (prevCellIndex > 0) {
+            prevCellIndex -= 1;
+
+            if (stack[prevCellIndex].value > 0) {
+              if (stack[prevCellIndex].value !== currentCell.value) {
+                prevCellIndex += 1;
+              }
+
+              break;
+            }
+          }
+
+          const prevCell = stack[prevCellIndex];
+
+          if (prevCell.index !== currentCell.index) {
+            if (prevCell.value === 0) {
+              // move cell
+              const { value } = currentCell;
+
+              prevCell.value = value;
+              currentCell.value = 0;
+              turnProcessed = true;
+            } else if (prevCell.value === currentCell.value) {
+              // squash cells
+              const { value } = currentCell;
+
+              prevCell.value += value;
+              prevCell.squashed = true;
+              currentCell.value = 0;
+              turnProcessed = true;
+            }
+          }
+        }
+      }
+    });
+
+    const resetAttributes = { squashed: false };
+    const updatedCells = Object.values(stacks)
+      .flat()
+      .map((cell) => ({ ...cell, ...resetAttributes }));
+
+    if (turnProcessed) {
+      commit(MUTATION_SET_CELLS, updatedCells);
+      dispatch(ACTION_FETCH_NEW_CELLS);
+    }
   },
 };

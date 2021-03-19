@@ -10,8 +10,43 @@
 <script>
 import { mapState } from 'vuex';
 
+import { ACTION_PLAYER_TURN } from '@/store/actions';
+
 import Cell from './Cell.vue';
 import ErrorOverlay from './ErrorOverlay.vue';
+
+const KEY_CODES = {
+  81: {
+    key: 'Q',
+    axis: 'z',
+    direction: 'down',
+  },
+  87: {
+    key: 'W',
+    axis: 'x',
+    direction: 'up',
+  },
+  69: {
+    key: 'E',
+    axis: 'y',
+    direction: 'up',
+  },
+  65: {
+    key: 'A',
+    axis: 'y',
+    direction: 'down',
+  },
+  83: {
+    key: 'S',
+    axis: 'x',
+    direction: 'down',
+  },
+  68: {
+    key: 'D',
+    axis: 'z',
+    direction: 'up',
+  },
+};
 
 export default {
   name: 'GameField',
@@ -31,6 +66,26 @@ export default {
         height: `${height}px`,
       };
     },
+  },
+
+  methods: {
+    onkeydown(e) {
+      const { keyCode } = e;
+
+      if (keyCode in KEY_CODES) {
+        const { axis, direction } = KEY_CODES[keyCode];
+
+        this.$store.dispatch(ACTION_PLAYER_TURN, { axis, direction });
+      }
+    },
+  },
+
+  mounted() {
+    document.addEventListener('keydown', this.onkeydown);
+  },
+
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.onkeydown);
   },
 };
 </script>

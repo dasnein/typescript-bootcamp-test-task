@@ -12,13 +12,14 @@
         >{{ gameLevel.level }}</a
       >
     </nav>
+    <!-- <pre v-html="$store.state"></pre> -->
   </header>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 
-import { ACTION_INIT_GAME } from '@/store/index';
+import { ACTION_INIT_GAME } from '@/store/actions';
 import { GAME_LEVELS } from '@/config';
 
 export default {
