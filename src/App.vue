@@ -9,7 +9,8 @@
 <script>
 import { mapState } from 'vuex';
 
-import { ACTION_INIT_GAME, GAME_STATUSES } from '@/store/index';
+import { GAME_STATUSES } from '@/store/constants';
+import { ACTION_INIT_GAME } from '@/store/actions';
 import { GAME_LEVELS } from '@/config';
 
 import Header from './components/Header.vue';
@@ -36,9 +37,9 @@ export default {
     const { hash } = window.location;
 
     if (hash) {
-      const gameLevel = hash.replace('#test', '');
+      const gameLevel = +hash.replace('#test', '');
 
-      if (gameLevel in GAME_LEVELS) {
+      if (GAME_LEVELS.includes(gameLevel)) {
         this.$store.dispatch(ACTION_INIT_GAME, { gameLevel });
       }
     }

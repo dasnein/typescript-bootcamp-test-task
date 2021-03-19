@@ -8,6 +8,7 @@ export const MUTATION_SET_GAME_LEVEL = 'mutationSetGameLevel';
 export const MUTATION_SET_GAME_STATUS = 'mutationSetGameStatus';
 export const MUTATION_SET_PROCESSING = 'mutationSetProcessing';
 export const MUTATION_SET_REQUESTS_COUNTER = 'mutationSetRequestsCounter';
+export const MUTATION_SET_SERVER = 'mutationSetServer';
 export const MUTATION_SET_TURN_NUMBER = 'mutationSetTurnNumber';
 
 export default {
@@ -48,6 +49,9 @@ export default {
   },
   [MUTATION_SET_REQUESTS_COUNTER](state, newCounter = 0) {
     state.requestsCounter = newCounter;
+  },
+  [MUTATION_SET_SERVER](state, newServerUrl) {
+    state.serverUrl = newServerUrl;
   },
   [MUTATION_SET_TURN_NUMBER](state, newTurnNumber = 0) {
     state.turnNumber = newTurnNumber;

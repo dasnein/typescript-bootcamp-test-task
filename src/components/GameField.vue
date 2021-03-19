@@ -16,33 +16,27 @@ import Cell from './Cell.vue';
 import ErrorOverlay from './ErrorOverlay.vue';
 
 const KEY_CODES = {
-  81: {
-    key: 'Q',
+  KeyQ: {
     axis: 'z',
     direction: 'down',
   },
-  87: {
-    key: 'W',
+  KeyW: {
     axis: 'x',
     direction: 'up',
   },
-  69: {
-    key: 'E',
+  KeyE: {
     axis: 'y',
     direction: 'up',
   },
-  65: {
-    key: 'A',
+  KeyA: {
     axis: 'y',
     direction: 'down',
   },
-  83: {
-    key: 'S',
+  KeyS: {
     axis: 'x',
     direction: 'down',
   },
-  68: {
-    key: 'D',
+  KeyD: {
     axis: 'z',
     direction: 'up',
   },
@@ -70,10 +64,10 @@ export default {
 
   methods: {
     onkeydown(e) {
-      const { keyCode } = e;
+      const { code } = e;
 
-      if (keyCode in KEY_CODES) {
-        const { axis, direction } = KEY_CODES[keyCode];
+      if (code in KEY_CODES) {
+        const { axis, direction } = KEY_CODES[code];
 
         this.$store.dispatch(ACTION_PLAYER_TURN, { axis, direction });
       }
@@ -81,11 +75,11 @@ export default {
   },
 
   mounted() {
-    document.addEventListener('keydown', this.onkeydown);
+    window.addEventListener('keypress', this.onkeydown);
   },
 
   beforeDestroy() {
-    document.removeEventListener('keydown', this.onkeydown);
+    window.removeEventListener('keypress', this.onkeydown);
   },
 };
 </script>

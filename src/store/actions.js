@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 import {
-  GAME_FIELD_MIN_HEIGHT, GAME_FIELD_WIDTH, REQUESTS_LIMIT, REQUESTS_TIMEOUT, SERVER_URL,
+  GAME_FIELD_MIN_HEIGHT,
+  GAME_FIELD_WIDTH,
+  REQUESTS_LIMIT,
+  REQUESTS_TIMEOUT,
 } from '@/config';
 import getCellSize from '@/helpers/get_cell_size';
 import generateCells from '@/helpers/generate_cells';
@@ -19,9 +22,11 @@ import {
   MUTATION_SET_GAME_STATUS,
   MUTATION_SET_PROCESSING,
   MUTATION_SET_REQUESTS_COUNTER,
+  MUTATION_SET_SERVER,
   MUTATION_SET_TURN_NUMBER,
 } from './mutations';
 
+export const ACTION_CHANGE_SERVER = 'actionChangeServer';
 export const ACTION_INIT_GAME = 'actionInitGame';
 export const ACTION_PLAYER_TURN = 'actionPlayerTurn';
 const ACTION_FETCH_NEW_CELLS = 'actionFetchNewCells';
@@ -30,11 +35,15 @@ const ACTION_SET_FIELD_SIZE = 'actionSetFieldSize';
 const ACTION_UPDATE_CELLS = 'actionUpdateCells';
 
 export default {
+  [ACTION_CHANGE_SERVER]({ commit, dispatch, state }, newServerUrl) {
+    commit(MUTATION_SET_SERVER, newServerUrl);
+    dispatch(ACTION_INIT_GAME, { gameLevel: state.gameLevel });
+  },
   async [ACTION_FETCH_NEW_CELLS]({ commit, dispatch, state }) {
     commit(MUTATION_SET_PROCESSING, true);
     commit(MUTATION_SET_REQUESTS_COUNTER, state.requestsCounter + 1);
 
-    const url = `${SERVER_URL}/${state.gameLevel}`;
+    const url = `${state.serverUrl}/${state.gameLevel}`;
     const filteredCells = prepareCellsForSending(state.cells);
 
     try {

@@ -1,25 +1,38 @@
 <template>
   <header>
-    <h2>Select game level:</h2>
+    <h2>Select field radius:</h2>
     <nav class="game-levels">
       <a
         v-for="gameLevel in gameLevels"
         :key="gameLevel.level"
         href="#"
         class="game-levels__level"
-        :class="{ 'game-levels__level-active' : gameLevel.active }"
+        :class="{ 'game-levels__level-active': gameLevel.active }"
         @click.prevent="initGame(gameLevel.level)"
         >{{ gameLevel.level }}</a
       >
     </nav>
-    <!-- <pre v-html="$store.state"></pre> -->
+    <fieldset class="select-server">
+      <label for="url-server">Select server: </label>
+      <select id="url-server" @change="onServerChange">
+        <option
+          id="remote"
+          value="//68f02c80-3bed-4e10-a747-4ff774ae905a.pub.instances.scw.cloud"
+        >
+          Remote server
+        </option>
+        <option selected id="localhost" value="//localhost:13337">
+          Local server
+        </option>
+      </select>
+    </fieldset>
   </header>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 
-import { ACTION_INIT_GAME } from '@/store/actions';
+import { ACTION_CHANGE_SERVER, ACTION_INIT_GAME } from '@/store/actions';
 import { GAME_LEVELS } from '@/config';
 
 export default {
@@ -40,6 +53,11 @@ export default {
   methods: {
     initGame(gameLevel) {
       this.$store.dispatch(ACTION_INIT_GAME, { gameLevel });
+    },
+    onServerChange(e) {
+      const { value } = e.target;
+
+      this.$store.dispatch(ACTION_CHANGE_SERVER, value);
     },
   },
 };
@@ -89,6 +107,14 @@ header {
         }
       }
     }
+  }
+
+  .select-server {
+    appearance: none;
+    border: none;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
   }
 }
 </style>

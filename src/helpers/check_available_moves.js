@@ -20,6 +20,8 @@ export default function checkAvailableMoves(cells) {
         }
       }
     }
+
+    return false;
   });
 
   return isAvailableMoves;

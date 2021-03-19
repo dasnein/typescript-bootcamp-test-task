@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import { SERVERS } from '@/config';
 import { GAME_STATUSES } from './constants';
 
 import actions from './actions';
@@ -10,6 +11,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    serverUrl: SERVERS.LOCAL,
     processing: false,
     error: false,
     requestsCounter: 0,

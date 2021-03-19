@@ -22,7 +22,11 @@ export const BG_COLORS = {
   2048: '#edc22e',
 };
 
-export const SERVER_URL = '//68f02c80-3bed-4e10-a747-4ff774ae905a.pub.instances.scw.cloud';
+export const SERVERS = {
+  LOCAL: '//localhost:13337',
+  REMOTE: '//68f02c80-3bed-4e10-a747-4ff774ae905a.pub.instances.scw.cloud',
+};
+
 export const REQUESTS_LIMIT = 3;
 export const REQUESTS_TIMEOUT = 2 * 1000;
 
@@ -36,5 +40,5 @@ export default {
   MAX_CELL_SIZE,
   REQUESTS_LIMIT,
   REQUESTS_TIMEOUT,
-  SERVER_URL,
+  SERVERS,
 };
