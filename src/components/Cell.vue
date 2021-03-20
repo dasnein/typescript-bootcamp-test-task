@@ -2,7 +2,7 @@
   <div
     class="cell"
     :class="cellClasses"
-    data-value="0"
+    :data-value="cell.value"
     :data-x="cell.x"
     :data-y="cell.y"
     :data-z="cell.z"

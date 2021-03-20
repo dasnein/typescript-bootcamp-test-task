@@ -133,7 +133,10 @@ export default {
             prevCellIndex -= 1;
 
             if (stack[prevCellIndex].value > 0) {
-              if (stack[prevCellIndex].value !== currentCell.value) {
+              if (
+                stack[prevCellIndex].value !== currentCell.value
+                || stack[prevCellIndex].squashed
+              ) {
                 prevCellIndex += 1;
               }
 
