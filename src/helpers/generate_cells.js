@@ -10,7 +10,6 @@ Cell structure:
   // turn flags:
   attention: false, // play attention animation on cell
   squashed: false,  // is cell squashed with another at this turn
-  destroy: false    // destroy cell on transitionend
 }
 */
 
@@ -18,10 +17,9 @@ const defaultCellAttributes = {
   attention: false,
   value: 0,
   squashed: false,
-  destroy: false,
 };
 
-export default function generateCells({ gameLevel, turnNumber }) {
+export default function generateCells({ gameLevel }) {
   const cells = [];
   let cellsCounter = 0;
 
@@ -29,7 +27,7 @@ export default function generateCells({ gameLevel, turnNumber }) {
   for (let i = 0; i < gameLevel * 2 - 1; i++) {
     cells.push({
       ...defaultCellAttributes,
-      index: `game_cell_${turnNumber}_${cellsCounter}`,
+      index: `game_cell_${cellsCounter}`,
       x: 0,
       y: gameLevel - 1 - i,
       z: -gameLevel + 1 + i,
@@ -45,7 +43,7 @@ export default function generateCells({ gameLevel, turnNumber }) {
     for (let j = 0; j < itemsInCol; j++) {
       const newCellRight = {
         ...defaultCellAttributes,
-        index: `game_cell_${turnNumber}_${cellsCounter}`,
+        index: `game_cell_${cellsCounter}`,
         x: i + 1,
         y: gameLevel - 2 - j - i,
         z: -gameLevel + 1 + j,
@@ -55,7 +53,7 @@ export default function generateCells({ gameLevel, turnNumber }) {
 
       const newCellLeft = {
         ...defaultCellAttributes,
-        index: `game_cell_${turnNumber}_${cellsCounter}`,
+        index: `game_cell_${cellsCounter}`,
         x: -1 - i,
         y: gameLevel - 1 - j,
         z: -gameLevel + 2 + j + i,

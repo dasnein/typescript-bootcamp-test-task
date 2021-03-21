@@ -1,0 +1,32 @@
+@keyframes pulse {
+  from {
+    transform: scale(1);
+    z-index: 9;
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  to {
+    transform: scale(1);
+    z-index: 0;
+  }
+}
+
+@keyframes destroy {
+  0% {
+    z-index: 9;
+    opacity: 1;
+  }
+
+  80% {
+    z-index: 9;
+    opacity: 1;
+  }
+
+  100% {
+    z-index: 0;
+    opacity: 0;
+  }
+}

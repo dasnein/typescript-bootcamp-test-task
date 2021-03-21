@@ -27,6 +27,7 @@ export default new Vuex.Store({
       height: 0,
     },
     cells: [],
+    animations: [],
   },
   actions,
   mutations,

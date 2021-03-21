@@ -14,6 +14,7 @@
       :style="polygonBackgroundStyle"
     ></polygon>
     <polygon
+      v-if="border"
       class="icon__hexagon__polygon-border"
       fill="transparent"
       :points="points"
@@ -42,6 +43,10 @@ export default {
     cell: {
       type: Object,
       required: true,
+    },
+    border: {
+      type: Boolean,
+      default: true,
     },
   },
 
@@ -83,13 +88,14 @@ export default {
 
 <style lang="scss">
 .icon__hexagon {
-  transition: all 0.2s linear;
-
   &__polygon {
+    &-background {
+      transition: all 0.2s linear 0.1s;
+    }
+
     &-border {
       fill-opacity: 0.8;
       stroke: #000;
-      // stroke-width: 4;
     }
   }
 }

@@ -24,12 +24,13 @@ import {
   MUTATION_SET_REQUESTS_COUNTER,
   MUTATION_SET_SERVER,
   MUTATION_SET_TURN_NUMBER,
+  MUTATION_SET_ANIMATION,
 } from './mutations';
 
 export const ACTION_CHANGE_SERVER = 'actionChangeServer';
 export const ACTION_INIT_GAME = 'actionInitGame';
 export const ACTION_PLAYER_TURN = 'actionPlayerTurn';
-const ACTION_FETCH_NEW_CELLS = 'actionFetchNewCells';
+export const ACTION_FETCH_NEW_CELLS = 'actionFetchNewCells';
 const ACTION_SET_CELL_SIZE = 'actionSetCellSize';
 const ACTION_SET_FIELD_SIZE = 'actionSetFieldSize';
 const ACTION_UPDATE_CELLS = 'actionUpdateCells';
@@ -70,8 +71,8 @@ export default {
       }
     }
   },
-  async [ACTION_INIT_GAME]({ commit, dispatch, state }, { gameLevel = 2 } = {}) {
-    const cells = generateCells({ gameLevel, turnNumber: state.turnNumber });
+  async [ACTION_INIT_GAME]({ commit, dispatch }, { gameLevel = 2 } = {}) {
+    const cells = generateCells({ gameLevel });
 
     commit(MUTATION_SET_TURN_NUMBER, 0);
     commit(MUTATION_SET_CELLS, cells);
@@ -147,12 +148,20 @@ export default {
           const prevCell = stack[prevCellIndex];
 
           if (prevCell.index !== currentCell.index) {
+            let animation = null;
+
             if (prevCell.value === 0) {
               // move cell
               const { value } = currentCell;
 
               prevCell.value = value;
               currentCell.value = 0;
+
+              animation = {
+                from: { ...currentCell },
+                to: { ...prevCell },
+              };
+
               turnProcessed = true;
             } else if (prevCell.value === currentCell.value) {
               // squash cells
@@ -161,7 +170,17 @@ export default {
               prevCell.value += value;
               prevCell.squashed = true;
               currentCell.value = 0;
+
               turnProcessed = true;
+
+              animation = {
+                from: { ...currentCell },
+                to: { ...prevCell },
+              };
+            }
+
+            if (animation) {
+              commit(MUTATION_SET_ANIMATION, animation);
             }
           }
         }
@@ -176,6 +195,7 @@ export default {
     if (turnProcessed) {
       commit(MUTATION_SET_CELLS, updatedCells);
       await dispatch(ACTION_FETCH_NEW_CELLS);
+      commit(MUTATION_SET_TURN_NUMBER, state.turnNumber + 1);
     }
 
     const isAvailableMoves = checkAvailableMoves(state.cells);

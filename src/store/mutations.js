@@ -1,4 +1,3 @@
-export const MUTATION_DESTROY_CELL = 'mutationDestroyCell';
 export const MUTATION_SET_CELLS = 'mutationSetCells';
 export const MUTATION_SET_CELL_ATTRIBUTES = 'mutationSetCellAttributes';
 export const MUTATION_SET_CELL_SIZE = 'mutationSetCellSize';
@@ -10,13 +9,10 @@ export const MUTATION_SET_PROCESSING = 'mutationSetProcessing';
 export const MUTATION_SET_REQUESTS_COUNTER = 'mutationSetRequestsCounter';
 export const MUTATION_SET_SERVER = 'mutationSetServer';
 export const MUTATION_SET_TURN_NUMBER = 'mutationSetTurnNumber';
+export const MUTATION_SET_ANIMATION = 'mutationSetAnimation';
+export const MUTATION_DESTROY_ANIMATION = 'mutationDestroyAnimation';
 
 export default {
-  [MUTATION_DESTROY_CELL](state, cell) {
-    const cellIndex = state.cells.findIndex((c) => c.index === cell.index);
-
-    state.cells.splice(cellIndex, 1);
-  },
   [MUTATION_SET_CELLS](state, newCells) {
     state.cells = newCells;
   },
@@ -55,5 +51,16 @@ export default {
   },
   [MUTATION_SET_TURN_NUMBER](state, newTurnNumber = 0) {
     state.turnNumber = newTurnNumber;
+  },
+  [MUTATION_SET_ANIMATION](state, animation) {
+    const animationId = `${state.turnNumber}_${animation.from.index}_${animation.to.index}`;
+    const newAnimation = { ...animation, index: animationId };
+
+    state.animations.push(newAnimation);
+  },
+  [MUTATION_DESTROY_ANIMATION](state, animation) {
+    const animationIndex = state.animations.findIndex((c) => c.index === animation.index);
+
+    state.animations.splice(animationIndex, 1);
   },
 };

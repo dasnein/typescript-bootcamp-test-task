@@ -3,7 +3,7 @@
     <h3 v-if="processing">Connection error. Retrying...</h3>
     <template v-else>
       <h3>Connection error.</h3>
-      <button>Retry</button>
+      <button @click="reconnect">Retry</button>
     </template>
   </div>
 </template>
@@ -11,11 +11,19 @@
 <script>
 import { mapState } from 'vuex';
 
+import { ACTION_FETCH_NEW_CELLS } from '@/store/actions';
+
 export default {
   name: 'ErrorOverlay',
 
   computed: {
     ...mapState(['processing']),
+  },
+
+  methods: {
+    reconnect() {
+      this.$store.dispatch(ACTION_FETCH_NEW_CELLS);
+    },
   },
 };
 </script>

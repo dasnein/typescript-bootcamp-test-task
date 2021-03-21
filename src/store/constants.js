@@ -1,3 +1,8 @@
+export const ANIMATIONS_NAMES = {
+  ATTENTION: 'pulse',
+  DESTROY: 'destroy',
+};
+
 export const AXIS_SORT_DEPENDENCY = {
   x: 'y',
   y: 'x',
@@ -11,6 +16,7 @@ export const GAME_STATUSES = {
 };
 
 export default {
+  ANIMATIONS_NAMES,
   AXIS_SORT_DEPENDENCY,
   GAME_STATUSES,
 };

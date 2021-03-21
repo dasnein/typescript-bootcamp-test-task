@@ -2,6 +2,13 @@
   <div class="game-field">
     <ErrorOverlay v-if="error" />
     <div class="cells-container" :style="fieldStyle">
+      <div class="animations-container">
+        <Animation
+          v-for="animation in animations"
+          :key="animation.index"
+          :cell="animation"
+        />
+      </div>
       <Cell v-for="cell in cells" :key="cell.index" :cell="cell" />
     </div>
   </div>
@@ -12,6 +19,7 @@ import { mapState } from 'vuex';
 
 import { ACTION_PLAYER_TURN } from '@/store/actions';
 
+import Animation from './Animation.vue';
 import Cell from './Cell.vue';
 import ErrorOverlay from './ErrorOverlay.vue';
 
@@ -46,12 +54,20 @@ export default {
   name: 'GameField',
 
   components: {
+    Animation,
     Cell,
     ErrorOverlay,
   },
 
   computed: {
-    ...mapState(['error', 'cells', 'cellSize', 'fieldSize', 'gameLevel']),
+    ...mapState([
+      'animations',
+      'cells',
+      'cellSize',
+      'error',
+      'fieldSize',
+      'gameLevel',
+    ]),
     fieldStyle() {
       const { height, width } = this.fieldSize;
 
@@ -96,6 +112,15 @@ export default {
 
   .cells-container {
     position: relative;
+
+    .animations-container {
+      z-index: 2;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
   }
 }
 </style>

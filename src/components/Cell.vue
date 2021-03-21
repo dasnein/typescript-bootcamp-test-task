@@ -10,48 +10,19 @@
   >
     <Hexagon :cell="cell" />
     <span v-if="cell.value > 0" class="cell__value">{{ cell.value }}</span>
-    <!-- TODO: delete <small> tag -->
-    <small
-      style="
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding-top: 6em;
-        text-align: center;
-        line-height: 1.25em;
-      "
-      v-html="
-        [cell.x, cell.y, cell.z] +
-        '<br>' +
-        cell.index +
-        //'<br> att: ' +
-        //!!cell.attention +
-        '<br> sq: ' +
-        !!cell.squashed
-      "
-    ></small>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 
-import {
-  MUTATION_DESTROY_CELL,
-  MUTATION_SET_CELL_ATTRIBUTES,
-} from '@/store/mutations';
+import { ANIMATIONS_NAMES } from '@/store/constants';
+import { MUTATION_SET_CELL_ATTRIBUTES } from '@/store/mutations';
+
+import getCellPosition from '@/helpers/get_cell_position';
+import convertStyleProps from '@/helpers/convert_style_props';
 
 import Hexagon from './Hexagon.vue';
-
-const ANIMATIONS_NAMES = {
-  ATTENTION: 'pulse',
-  DESTROY: 'destroy',
-};
 
 export default {
   name: 'Cell',
@@ -68,31 +39,16 @@ export default {
   computed: {
     ...mapState(['cellSize', 'fieldSize']),
     style() {
-      const position = {
-        top:
-          (this.fieldSize.height - this.cellSize.height) / 2
-          + (this.cell.z * this.cellSize.height) / 2
-          - (this.cell.y * this.cellSize.height) / 2,
-        left:
-          (this.fieldSize.width - this.cellSize.width) / 2
-          + this.cell.x * this.cellSize.height * 0.85,
-      };
-
-      const style = {
-        ...position,
-        ...this.cellSize,
-      };
-
-      Object.entries(style).forEach(([key, value]) => {
-        style[key] = `${value}px`;
-      });
+      const { cellSize, fieldSize, cell } = this;
+      const position = getCellPosition({ cellSize, fieldSize, cell });
+      const style = convertStyleProps({ ...position, cellSize });
 
       return style;
     },
     cellClasses() {
-      const { attention, destroy } = this.cell;
+      const { attention } = this.cell;
 
-      return { attention, destroy };
+      return { attention };
     },
   },
 
@@ -107,11 +63,6 @@ export default {
         };
 
         this.$store.commit(MUTATION_SET_CELL_ATTRIBUTES, payload);
-        return;
-      }
-
-      if (e.animationName === ANIMATIONS_NAMES.DESTROY) {
-        this.$store.commit(MUTATION_DESTROY_CELL, this.cell);
       }
     });
   },
@@ -129,22 +80,6 @@ export default {
   &.attention {
     animation-name: pulse;
     animation-timing-function: ease-in-out;
-  }
-
-  &.destroy {
-    animation-name: destroy;
-    animation-timing-function: linear;
-  }
-
-  .coords {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   &__value {
