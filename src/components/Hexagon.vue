@@ -48,6 +48,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    delay: {
+      type: [Boolean, String],
+      default: '0.1s',
+    },
   },
 
   computed: {
@@ -73,6 +77,7 @@ export default {
     polygonBackgroundStyle() {
       return {
         fill: this.backgroundColor || '#fff',
+        transitionDelay: this.delay ?? '0s',
       };
     },
     polygonBorderStyle() {
@@ -90,7 +95,7 @@ export default {
 .icon__hexagon {
   &__polygon {
     &-background {
-      transition: all 0.2s linear 0.1s;
+      transition: all 0.2s linear;
     }
 
     &-border {

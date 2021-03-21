@@ -41,7 +41,7 @@ export default {
     style() {
       const { cellSize, fieldSize, cell } = this;
       const position = getCellPosition({ cellSize, fieldSize, cell });
-      const style = convertStyleProps({ ...position, cellSize });
+      const style = convertStyleProps({ ...position, ...cellSize });
 
       return style;
     },

@@ -1,8 +1,14 @@
-export const DEFAULT_STROKE_WIDTH = 4;
-export const DEFAULT_CELL_BACKGROUND_COLOR = '#fff';
+export const GAME_LEVELS = [2, 3, 4, 5, 6];
 export const GAME_FIELD_MIN_HEIGHT = 500;
 export const GAME_FIELD_WIDTH = 500;
-export const GAME_LEVELS = [2, 3, 4];
+
+export const SERVERS = {
+  LOCAL: '//localhost:13337',
+  REMOTE: '//68f02c80-3bed-4e10-a747-4ff774ae905a.pub.instances.scw.cloud',
+};
+
+export const DEFAULT_STROKE_WIDTH = 4;
+export const DEFAULT_CELL_BACKGROUND_COLOR = '#fff';
 export const MAX_CELL_SIZE = {
   width: 200,
   height: 174,
@@ -20,11 +26,6 @@ export const BG_COLORS = {
   512: '#edc850',
   1024: '#edc53f',
   2048: '#edc22e',
-};
-
-export const SERVERS = {
-  LOCAL: '//localhost:13337',
-  REMOTE: '//68f02c80-3bed-4e10-a747-4ff774ae905a.pub.instances.scw.cloud',
 };
 
 export const REQUESTS_LIMIT = 3;

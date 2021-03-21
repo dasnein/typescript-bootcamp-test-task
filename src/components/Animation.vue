@@ -1,6 +1,6 @@
 <template>
   <div class="animation" :style="style">
-    <Hexagon :cell="stateCell" :border="false" />
+    <Hexagon :cell="stateCell" :border="false" :delay="false" />
   </div>
 </template>
 
@@ -38,7 +38,7 @@ export default {
     style() {
       const { cellSize, fieldSize, stateCell: cell } = this;
       const position = getCellPosition({ cellSize, fieldSize, cell });
-      const style = convertStyleProps({ ...position, cellSize });
+      const style = convertStyleProps({ ...position, ...cellSize });
 
       return style;
     },
