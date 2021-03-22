@@ -14,15 +14,14 @@
     </nav>
     <fieldset class="select-server">
       <label for="url-server">Select server: </label>
-      <select id="url-server" @change="onServerChange">
+      <select id="url-server" @change="onServerChange" :value="serverUrl">
         <option
-          id="remote"
-          value="//68f02c80-3bed-4e10-a747-4ff774ae905a.pub.instances.scw.cloud"
+          v-for="server in serversList"
+          :key="server.name"
+          :id="server.name.toLowerCase()"
+          :value="server.address"
         >
-          Remote server
-        </option>
-        <option selected id="localhost" value="//localhost:13337">
-          Local server
+          {{ server.name }}
         </option>
       </select>
     </fieldset>
@@ -33,13 +32,13 @@
 import { mapState } from 'vuex';
 
 import { ACTION_CHANGE_SERVER, ACTION_INIT_GAME } from '@/store/actions';
-import { GAME_LEVELS } from '@/config';
+import { GAME_LEVELS, SERVERS } from '@/config';
 
 export default {
   name: 'Header',
 
   computed: {
-    ...mapState(['gameLevel']),
+    ...mapState(['gameLevel', 'serverUrl']),
     gameLevels() {
       const levels = GAME_LEVELS.map((level) => ({
         level,
@@ -47,6 +46,14 @@ export default {
       }));
 
       return levels;
+    },
+    serversList() {
+      const list = Object.entries(SERVERS).map(([name, address]) => ({
+        name,
+        address,
+      }));
+
+      return list;
     },
   },
 

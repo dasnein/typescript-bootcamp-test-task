@@ -3,7 +3,7 @@ export const GAME_FIELD_MIN_HEIGHT = 500;
 export const GAME_FIELD_WIDTH = 500;
 
 export const SERVERS = {
-  LOCAL: '//localhost:13337',
+  LOCALHOST: '//localhost:13337',
   REMOTE: '//68f02c80-3bed-4e10-a747-4ff774ae905a.pub.instances.scw.cloud',
 };
 

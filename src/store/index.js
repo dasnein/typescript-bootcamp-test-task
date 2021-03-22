@@ -11,7 +11,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    serverUrl: SERVERS.LOCAL,
+    serverUrl: process.env.NODE_ENV === 'development' ? SERVERS.LOCALHOST : SERVERS.REMOTE,
     processing: false,
     error: false,
     requestsCounter: 0,

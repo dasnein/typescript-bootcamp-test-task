@@ -10,9 +10,10 @@ export const AXIS_SORT_DEPENDENCY = {
 };
 
 export const GAME_STATUSES = {
-  ROUND_SELECT: 'round-select',
-  PLAYING: 'playing',
   GAME_OVER: 'game-over',
+  NETWORK_UNAVAILABLE: 'network-unavailable',
+  PLAYING: 'playing',
+  ROUND_SELECT: 'round-select',
 };
 
 export default {

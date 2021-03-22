@@ -1,4 +1,7 @@
-# vuejs
+# evo-home-task
+
+Deployed project link:
+[http://evo-home-task.surge.sh/](http://evo-home-task.surge.sh/)
 
 ## Project setup
 ```

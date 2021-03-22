@@ -38,7 +38,10 @@ const ACTION_UPDATE_CELLS = 'actionUpdateCells';
 export default {
   [ACTION_CHANGE_SERVER]({ commit, dispatch, state }, newServerUrl) {
     commit(MUTATION_SET_SERVER, newServerUrl);
-    dispatch(ACTION_INIT_GAME, { gameLevel: state.gameLevel });
+
+    if (state.gameLevel > 0) {
+      dispatch(ACTION_INIT_GAME, { gameLevel: state.gameLevel });
+    }
   },
   async [ACTION_FETCH_NEW_CELLS]({ commit, dispatch, state }) {
     commit(MUTATION_SET_PROCESSING, true);
@@ -58,8 +61,10 @@ export default {
       commit(MUTATION_SET_PROCESSING, false);
       commit(MUTATION_SET_REQUESTS_COUNTER, 0);
       dispatch(ACTION_UPDATE_CELLS, data);
+      commit(MUTATION_SET_GAME_STATUS, GAME_STATUSES.PLAYING);
     } catch (error) {
       commit(MUTATION_SET_ERROR, true);
+      commit(MUTATION_SET_GAME_STATUS, GAME_STATUSES.NETWORK_UNAVAILABLE);
 
       if (state.requestsCounter < REQUESTS_LIMIT) {
         setTimeout(() => {
@@ -80,7 +85,6 @@ export default {
     dispatch(ACTION_SET_CELL_SIZE);
     dispatch(ACTION_SET_FIELD_SIZE);
     await dispatch(ACTION_FETCH_NEW_CELLS);
-    commit(MUTATION_SET_GAME_STATUS, GAME_STATUSES.PLAYING);
   },
   [ACTION_SET_CELL_SIZE]({ commit, state }) {
     const size = getCellSize(state.gameLevel);

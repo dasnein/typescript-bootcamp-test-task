@@ -40,7 +40,9 @@ export default {
       const gameLevel = +hash.replace('#test', '');
 
       if (GAME_LEVELS.includes(gameLevel)) {
-        this.$store.dispatch(ACTION_INIT_GAME, { gameLevel });
+        setTimeout(() => {
+          this.$store.dispatch(ACTION_INIT_GAME, { gameLevel });
+        }, 200);
       }
     }
   },
